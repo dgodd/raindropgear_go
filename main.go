@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/dgodd/raindropgear_go/model"
+	"github.com/dgodd/raindropgear_go/tpl"
 	"github.com/julienschmidt/httprouter"
 	db "upper.io/db.v2"
 	"upper.io/db.v2/postgresql"
@@ -12,26 +14,22 @@ import (
 
 var belts db.Collection
 
-type Belt struct {
-	ID          uint64 `db:"id,omitempty"`
-	Title       string `db:"title"`
-	Description string `db:"description"`
-	Fabric      string `db:"fabric"`
-	Front       string `db:"front"`
-	Back        string `db:"back"`
-}
-
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var b []Belt
+	var b []model.Belt
 	err := belts.Find().All(&b)
-	fmt.Println("%+v", b)
-	fmt.Println("%+v", err)
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte("Could not read database"))
+	}
+	// fmt.Println("%+v", b)
+	// fmt.Println("%+v", err)
 
-	fmt.Fprint(w, "Welcome!\n")
+	// fmt.Fprint(w, "Welcome!\n")
+	w.Write([]byte(tpl.Index(b)))
 }
 
 func GetBelt(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	var b Belt
+	var b model.Belt
 	err := belts.Find("slug", ps.ByName("slug")).One(&b)
 	fmt.Println("%+v", b)
 	fmt.Println("%+v", err)

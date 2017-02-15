@@ -1,0 +1,17 @@
+@{
+  import (
+    "github.com/dgodd/raindropgear_go/model"
+    "github.com/dgodd/raindropgear_go/tpl/layout/base"
+  )
+  var belts []model.Belt
+}
+
+<ul>
+@for _, b := range belts {
+  <li>@b.Title</li>
+}
+</ul>
+
+@section title {
+  <title>Raindropgear</title>
+}
